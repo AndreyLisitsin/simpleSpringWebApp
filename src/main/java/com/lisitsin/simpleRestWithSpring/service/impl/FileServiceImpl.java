@@ -4,16 +4,33 @@ import com.lisitsin.simpleRestWithSpring.model.FileEntity;
 import com.lisitsin.simpleRestWithSpring.model.Status;
 import com.lisitsin.simpleRestWithSpring.repository.FileRepository;
 import com.lisitsin.simpleRestWithSpring.service.FileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
+@Slf4j
 public class FileServiceImpl implements FileService {
 
+    private final FileRepository fileRepository;
+
+    @Value("${aws.s3.pathToFile}")
+    private String fileUrl;
+
     @Autowired
-    private FileRepository fileRepository;
+    public FileServiceImpl(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
+
     @Override
-    public FileEntity register(FileEntity file) {
+    public FileEntity save(FileEntity file, String fileName) {
+        if (file.getName() == null){
+            file.setName(fileName);
+        }
+        file.setFilePath(fileUrl + file.getName());
         file.setStatus(Status.ACTIVE);
         fileRepository.save(file);
         return file;
@@ -21,21 +38,25 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileEntity update(FileEntity file) {
+        if (file != null) {
+            fileRepository.save(file);
+            return file;
+        }
         return null;
     }
 
     @Override
     public List<FileEntity> getAll() {
-        return null;
+        return fileRepository.findAll();
     }
 
     @Override
     public FileEntity findById(Long id) {
-        return null;
+        return fileRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void delete(Long id) {
-
+    public void deleteById(Long id) {
+        fileRepository.deleteById(id);
     }
 }

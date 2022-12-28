@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity update(UserEntity user) {
-
         UserEntity updatedUser = userRepository.save(user);
         return updatedUser;
     }
@@ -52,7 +51,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserEntity> getAll() {
         List<UserEntity> users = userRepository.findAll();
-        log.info("");
         return users;
     }
 

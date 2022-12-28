@@ -1,0 +1,45 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    
+    <changeSet id="2.0.0" author="Andrey.Lisitsin">
+        <addColumn tableName="events">
+            <column name="event_name" type="varchar(100)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2.0.1" author="Andrey.Lisitsin">
+        <addColumn tableName="files">
+            <column name="event_id" type="bigint">
+                    <constraints nullable="false" foreignKeyName="files_event_id" references="events(id)" deleteCascade="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2.0.2" author="Andrey.Lisitsin">
+        <dropNotNullConstraint tableName="events" columnName="file_id" columnDataType="bigint"/>
+    </changeSet>
+
+    <changeSet id="2.0.3" author="Andrey.Lisitsin">
+        <dropForeignKeyConstraint baseTableName="files" constraintName="files_event_id"/>
+        <dropColumn tableName="files" columnName="event_id"/>
+    </changeSet>
+
+    <changeSet id="2.0.4" author="Andrey.Lisitsin">
+        <dropForeignKeyConstraint baseTableName="events" constraintName="user_roles_file_id"/>
+        <dropColumn tableName="events" columnName="file_id"/>
+    </changeSet>
+
+    <changeSet id="2.0.5" author="Andrey.Lisitsin">
+        <createTable tableName="events_files">
+            <column name="event_id" type="bigint">
+                <constraints nullable="false" foreignKeyName = "events_files_event_id" references="events(id)" deleteCascade="true"/>
+            </column>
+            <column name="file_id" type="bigint">
+                <constraints foreignKeyName = "events_files_file_id" references="files(id)" deleteCascade="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

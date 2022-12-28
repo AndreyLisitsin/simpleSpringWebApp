@@ -8,9 +8,15 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EventDto {
+    private Long id;
+    private String name;
     private FileDto file;
 
     public EventDto(EventEntity eventEntity){
-        this.file = new FileDto(eventEntity.getFile());
+        if (eventEntity.getFile() != null) {
+            this.file = new FileDto(eventEntity.getFile());
+        }
+        this.id = eventEntity.getId();
+        this.name = eventEntity.getName();
     }
 }

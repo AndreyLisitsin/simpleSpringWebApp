@@ -5,9 +5,9 @@ import com.lisitsin.simpleRestWithSpring.model.EventEntity;
 import java.util.List;
 
 public interface EventService {
-    EventEntity register(EventEntity user);
+    EventEntity save(EventEntity event);
 
-    EventEntity update(EventEntity user);
+    EventEntity update(EventEntity event);
 
     List<EventEntity> getAll();
 

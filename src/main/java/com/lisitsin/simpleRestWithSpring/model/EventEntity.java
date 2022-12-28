@@ -4,19 +4,23 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity
 @Table(name = "events")
 @Data
 public class EventEntity extends BaseEntity{
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "file_id")
+
+    @OneToOne(mappedBy = "event")
     private FileEntity file;
 
+    @Column(name = "event_name")
+    private String name;
+
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
 }
