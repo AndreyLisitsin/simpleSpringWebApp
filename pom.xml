@@ -16,6 +16,12 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<liquibase.version>4.3.1</liquibase.version>
+		<mysqlConnector.version>8.0.28</mysqlConnector.version>
+		<jwt.version>0.9.1</jwt.version>
+		<gson.version>2.9.0</gson.version>
+		<commonsIO.version>2.6</commonsIO.version>
+		<aws.sdk.s3.version>1.12.369</aws.sdk.s3.version>
 	</properties>
 
 	<dependencies>
@@ -34,13 +40,13 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.3.1</version>
+			<version>${liquibase.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.28</version>
+			<version>${mysqlConnector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -61,31 +67,26 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.9.1</version>
+			<version>${jwt.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.9.0</version>
+			<version>${gson.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${commonsIO.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.369</version>
+			<version>${aws.sdk.s3.version}</version>
 		</dependency>
-
 	</dependencies>
-
-
 
 	<build>
 		<plugins>

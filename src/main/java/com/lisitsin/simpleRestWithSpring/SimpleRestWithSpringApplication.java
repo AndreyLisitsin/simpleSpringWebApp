@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 public class SimpleRestWithSpringApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SimpleRestWithSpringApplication.class, args);
 	}

@@ -1,9 +1,7 @@
 package com.lisitsin.simpleRestWithSpring.security.jwt;
 
-import com.lisitsin.simpleRestWithSpring.model.BaseEntity;
-import com.lisitsin.simpleRestWithSpring.model.EventEntity;
-import com.lisitsin.simpleRestWithSpring.model.Role;
-import com.lisitsin.simpleRestWithSpring.model.UserEntity;
+import com.lisitsin.simpleRestWithSpring.model.*;
+import com.lisitsin.simpleRestWithSpring.service.EventService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 @Slf4j
 @Component
@@ -50,8 +45,18 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("roles", getRoleNames(user.getRoles()));
         claims.put("id", user.getId());
-        claims.put("events_id", user.getEvents().stream().map(BaseEntity::getId).collect(Collectors.toList()));
-        claims.put("files_id", user.getEvents().stream().map(EventEntity::getFile).map(BaseEntity::getId).collect(Collectors.toList()));
+
+        List<EventEntity> events = user.getEvents();
+
+        if (events!= null && !events.isEmpty()) {
+            claims.put("events_id", user.getEvents().stream().map(BaseEntity::getId).collect(Collectors.toList()));
+            List<FileEntity> fileEntities = events.stream().map(EventEntity::getFile).collect(Collectors.toList());
+            log.info(fileEntities.toString());
+            if (fileEntities != null || !fileEntities.isEmpty()){
+                claims.put("files_id", fileEntities.stream().filter(Objects::nonNull).map(f -> f.getId()).collect(Collectors.toList()));
+            }
+        }
+
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliSeconds);
