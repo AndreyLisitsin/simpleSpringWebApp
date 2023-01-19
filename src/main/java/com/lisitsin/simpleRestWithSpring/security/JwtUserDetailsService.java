@@ -1,7 +1,7 @@
 package com.lisitsin.simpleRestWithSpring.security;
 
-import com.lisitsin.simpleRestWithSpring.model.UserEntity;
 import com.lisitsin.simpleRestWithSpring.security.jwt.JwtUser;
+import com.lisitsin.simpleRestWithSpring.model.UserEntity;
 import com.lisitsin.simpleRestWithSpring.security.jwt.JwtUserFactory;
 import com.lisitsin.simpleRestWithSpring.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class JwtUserDetailsService implements UserDetailsService {
-
     private final UserService userService;
 
     @Autowired

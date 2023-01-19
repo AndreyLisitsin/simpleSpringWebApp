@@ -26,9 +26,15 @@ public class RegistrationRestControllerV1 {
 
     @PostMapping
     public ResponseEntity<UserDto> registrationUser(@RequestBody UserEntity user){
-        UserEntity registeredUser = userService.register(user);
 
-        return new ResponseEntity<>(new UserDto(registeredUser), HttpStatus.OK);
+        if (user.getUsername()!= null && user.getPassword() != null) {
+
+            UserEntity registeredUser = userService.register(user);
+
+            return new ResponseEntity<>(new UserDto(registeredUser), HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
 
     }
 }

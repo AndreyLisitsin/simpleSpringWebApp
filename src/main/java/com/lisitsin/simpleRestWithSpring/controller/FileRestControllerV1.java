@@ -44,14 +44,14 @@ public class FileRestControllerV1 {
 
     @Secured({"ROLE_ADMIN", "ROLE_MODERATOR"})
     @GetMapping
-    public ResponseEntity<List<FileDto>> getListOfUsers(){
+    public ResponseEntity<List<FileDto>> getListOfFiles(){
         List<FileEntity> files = fileService.getAll();
         List<FileDto> fileDtoList = files.stream().map(FileDto::new).collect(Collectors.toList());
         return new ResponseEntity<>(fileDtoList, HttpStatus.OK);
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<FileDto> uploadFile(@RequestPart("file") MultipartFile multipartFile,
+    public ResponseEntity<FileDto> saveFile(@RequestPart("file") MultipartFile multipartFile,
                                               @RequestPart("fileEntity") String fileEntityJson){
 
         FileEntity fileEntity = new Gson().fromJson(fileEntityJson, FileEntity.class);
@@ -72,14 +72,7 @@ public class FileRestControllerV1 {
     @Secured({"ROLE_ADMIN", "ROLE_MODERATOR"})
     @PutMapping
     public ResponseEntity<FileDto> updateFile(@RequestBody FileEntity fileEntity){
-
-        try {
-            fileService.update(fileEntity);
-        } catch (Exception e){
-            log.info(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
+        fileService.update(fileEntity);
         FileDto fileDto = new FileDto(fileEntity);
         return new ResponseEntity<>(fileDto, HttpStatus.ACCEPTED);
     }
@@ -98,6 +91,5 @@ public class FileRestControllerV1 {
         return new ResponseEntity<>( HttpStatus.OK);
 
     }
-
 
 }

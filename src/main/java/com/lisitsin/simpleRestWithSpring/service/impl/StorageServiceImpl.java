@@ -1,11 +1,10 @@
 package com.lisitsin.simpleRestWithSpring.service.impl;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.lisitsin.simpleRestWithSpring.service.FileService;
 import com.lisitsin.simpleRestWithSpring.service.StorageService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @Slf4j
@@ -27,7 +26,7 @@ public class StorageServiceImpl implements StorageService {
     private final FileService fileService;
     private final AmazonS3 amazonS3;
 
-    @Value("{aws.s3.bucketName}")
+    @Value("${aws.s3.bucketName}")
     private String bucketName;
 
     @Autowired

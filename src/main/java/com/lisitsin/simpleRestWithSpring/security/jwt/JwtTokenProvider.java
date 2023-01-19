@@ -1,7 +1,6 @@
 package com.lisitsin.simpleRestWithSpring.security.jwt;
 
 import com.lisitsin.simpleRestWithSpring.model.*;
-import com.lisitsin.simpleRestWithSpring.service.EventService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.extern.slf4j.Slf4j;
@@ -42,21 +41,10 @@ public class JwtTokenProvider {
     }
 
     public String createToken(UserEntity user){
+
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("roles", getRoleNames(user.getRoles()));
         claims.put("id", user.getId());
-
-        List<EventEntity> events = user.getEvents();
-
-        if (events!= null && !events.isEmpty()) {
-            claims.put("events_id", user.getEvents().stream().map(BaseEntity::getId).collect(Collectors.toList()));
-            List<FileEntity> fileEntities = events.stream().map(EventEntity::getFile).collect(Collectors.toList());
-            log.info(fileEntities.toString());
-            if (fileEntities != null || !fileEntities.isEmpty()){
-                claims.put("files_id", fileEntities.stream().filter(Objects::nonNull).map(f -> f.getId()).collect(Collectors.toList()));
-            }
-        }
-
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliSeconds);
@@ -83,16 +71,12 @@ public class JwtTokenProvider {
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null && bearerToken.startsWith("Bearer_")){
-            String token = bearerToken.substring(7, bearerToken.length());
-            if (request.getMethod().equals("GET")){
-                token = getTokenByAuthorities(request, token);
-            }
-            return token;
+            return bearerToken.substring(7);
         }
         return  null;
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
@@ -111,47 +95,14 @@ public class JwtTokenProvider {
 
 
     public Long getUserId(String bearerToken) {
-        String token = bearerToken.substring(7, bearerToken.length());
+        String token = bearerToken.substring(7);
         DefaultClaims claims = (DefaultClaims) Jwts.parser().setSigningKey(secret).parse(token).getBody();
         return claims.get("id", Long.class);
     }
 
-
-    public String getTokenByAuthorities(HttpServletRequest request, String token){
-
+    public List<String> getUsersAuthorities(String bearerToken) {
+        String token = bearerToken.substring(7);
         DefaultClaims claims = (DefaultClaims) Jwts.parser().setSigningKey(secret).parse(token).getBody();
-        List<String> roles = claims.get("roles", List.class);
-
-        int indexOfId = request.getRequestURI().lastIndexOf("/");
-        String idFromUrl = request.getRequestURI().substring(indexOfId + 1);
-
-        if (roles.contains("ROLE_ADMIN") || roles.contains("ROLE_MODERATOR")){
-            return token;
-        }
-
-        if (request.getRequestURI().contains("users")) {
-            Long UserId = claims.get("id", Long.class);
-            if (UserId != Long.parseLong(idFromUrl)) {
-                return null;
-            }
-            return token;
-        }
-
-        if (request.getRequestURI().contains("events")) {
-            List<Long> events_id = claims.get("events_id", List.class);
-            if (!events_id.contains(Long.parseLong(idFromUrl))){
-                return null;
-            }
-            return token;
-        }
-
-        if (request.getRequestURI().contains("files")) {
-            List<Long> files_id = claims.get("files_id", List.class);
-            if (!files_id.contains(Long.parseLong(idFromUrl))){
-                return null;
-            }
-            return token;
-        }
-        return null;
+        return claims.get("roles", List.class);
     }
 }

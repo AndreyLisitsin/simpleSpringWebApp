@@ -7,7 +7,6 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 
 @Configuration
 public class FileServiceConfig {
-
     @Bean
     public StandardServletMultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();

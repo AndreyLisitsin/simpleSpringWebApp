@@ -27,7 +27,6 @@ public class EventRestControllerV1 {
         this.userService = userService;
     }
 
-    @Secured(value = {"ROLE_ADMIN", "MODERATOR", "ROLE_USER"})
     @PostMapping
     public ResponseEntity<EventDto> saveEvent(@RequestBody EventEntity event,
                                               @RequestHeader(value = "Authorization")String token){
@@ -37,7 +36,7 @@ public class EventRestControllerV1 {
         return new ResponseEntity<>(new EventDto(event), HttpStatus.CREATED);
     }
 
-    @Secured(value = {"ROLE_ADMIN", "MODERATOR", "ROLE_USER"})
+
     @GetMapping(value = "{id}")
     public ResponseEntity<EventDto> findById(@PathVariable(value = "id")Long id){
         EventEntity event = eventService.findById(id);

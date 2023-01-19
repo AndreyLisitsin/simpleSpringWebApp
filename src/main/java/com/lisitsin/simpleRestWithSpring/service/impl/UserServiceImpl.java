@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserEntity register(UserEntity user) {
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
@@ -43,7 +45,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserEntity update(UserEntity user) {
+        if (user.getRoles() == null || user.getRoles().isEmpty()){
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
+            user.setRoles(userRoles);
+        }
         UserEntity updatedUser = userRepository.save(user);
         return updatedUser;
     }

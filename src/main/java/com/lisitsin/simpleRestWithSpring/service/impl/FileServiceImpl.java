@@ -30,6 +30,9 @@ public class FileServiceImpl implements FileService {
         if (file.getName() == null){
             file.setName(fileName);
         }
+        if (file.getEvent() == null){
+            throw new RuntimeException("File must have an event");
+        }
         file.setFilePath(fileUrl + file.getName());
         file.setStatus(Status.ACTIVE);
         fileRepository.save(file);
